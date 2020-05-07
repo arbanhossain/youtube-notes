@@ -1,18 +1,15 @@
 let submitButton = document.getElementById('commit');
-let x = null;
-
 let SRC = '';
 
 const init_notepad = () => {
-  //let pad = localStorage.getItem();
   chrome.tabs.executeScript({
     code: `x = window.location.href;x;`
   }, (src) => {
-    SRC = src[0]
+    SRC = src[0];
     console.log(SRC);
     SRC = SRC.replace("https://www.youtube.com/watch?v=", "");
     console.log(`id is ${SRC}`);
-    if(localStorage.getItem(SRC) == null){
+    if (localStorage.getItem(SRC) == null) {
       localStorage.setItem(SRC, ``);
     }
   });
