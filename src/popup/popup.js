@@ -1,7 +1,9 @@
 let submitButton = document.getElementById('commit');
+let noteArea = document.getElementById('note');
+let view = document.getElementById('view');
 let SRC = '';
 
-const init_notepad = () => {
+const initFile = () => {
   chrome.tabs.executeScript({
     code: `x = window.location.href;x;`
   }, (src) => {
@@ -9,14 +11,27 @@ const init_notepad = () => {
     console.log(SRC);
     SRC = SRC.replace("https://www.youtube.com/watch?v=", "");
     console.log(`id is ${SRC}`);
+    SRC = SRC.replace(/&.+/, "");
+    console.log(`id is ${SRC}`);
     if (localStorage.getItem(SRC) == null) {
       localStorage.setItem(SRC, ``);
     }
+    console.log(localStorage.getItem(SRC))
   });
 }
 
+const formatViewText = (text) => {
+  text = text.replace(/Time=/g, "").replace(/, N/g, " => ").replace(/ote=/g, "");
+  return text;
+}
+
+const updateView = () => {
+  let text = formatViewText(localStorage.getItem(SRC));
+  view.innerHTML = text;
+}
+
 const clearNotepad = () => {
-  document.getElementById('note').value = '';
+  noteArea.value = '';
 }
 
 const saveNote = (data) => {
@@ -29,6 +44,7 @@ const addToNote = (time, note) => {
   console.log(text);
   localStorage.setItem(SRC, text)
   clearNotepad();
+  updateView();
 }
 
 submitButton.onclick = (e) => {
@@ -40,4 +56,8 @@ submitButton.onclick = (e) => {
   });
 }
 
-init_notepad();
+viewButton.onclick = (e) => {
+  updateView();
+}
+
+initFile();
