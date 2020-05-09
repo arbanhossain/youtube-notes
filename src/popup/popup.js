@@ -1,8 +1,14 @@
+/*
+  Variable Initialization
+*/
 let submitButton = document.getElementById('commit');
 let noteArea = document.getElementById('note');
 let view = document.getElementById('view');
 let SRC = '';
 
+/*
+  Initializes Local Storage for the current URL
+*/
 const initFile = () => {
   chrome.tabs.executeScript({
     code: `x = window.location.href;x;`
@@ -25,6 +31,9 @@ const formatViewText = (text) => {
   return text;
 }
 
+/*
+  Show the notes
+*/
 const updateView = () => {
   let text = formatViewText(localStorage.getItem(SRC));
   view.innerHTML = text;
@@ -56,6 +65,9 @@ submitButton.onclick = (e) => {
   });
 }
 
+/*
+  Note Viewing is manual for now
+*/
 viewButton.onclick = (e) => {
   updateView();
 }
