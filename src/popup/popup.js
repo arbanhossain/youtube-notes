@@ -14,36 +14,37 @@ const initFile = () => {
     code: `x = window.location.href;x;`
   }, (src) => {
     SRC = src[0];
-    console.log(SRC);
+    //console.log(SRC);
     SRC = SRC.replace("https://www.youtube.com/watch?v=", "");
-    console.log(`id is ${SRC}`);
+    //console.log(`id is ${SRC}`);
     SRC = SRC.replace(/&.+/, "");
-    console.log(`id is ${SRC}`);
+    //console.log(`id is ${SRC}`);
     if (localStorage.getItem(SRC) == null) {
       localStorage.setItem(SRC, ``);
     }
-    console.log(localStorage.getItem(SRC))
+    //console.log(localStorage.getItem(SRC))
   });
 }
 
 const sortNoteObject = (a, b) => {
-  return((parseInt(a.time) > parseInt(b.time)) ? 1 : -1);
+  return ((parseInt(a.time) > parseInt(b.time)) ? 1 : -1);
 }
 
 const formatViewText = (text) => {
   let working = text.split('\n');
   let obj = [];
   working.forEach(item => {
-    //console.log(item)
-    if(item != '') {
-      let time = item.match(/Time=[0-9]+\.[0-9]+/)[0].replace("Time=","").split(".")[0];
-      let note = item.match(/Note=.+/)[0].replace("Note=","");
-      obj.push({ "time": time, "note": note });
+    if (item != '') {
+      let time = item.match(/Time=[0-9]+\.[0-9]+/)[0].replace("Time=", "").split(".")[0];
+      let note = item.match(/Note=.+/)[0].replace("Note=", "");
+      obj.push({
+        "time": time,
+        "note": note
+      });
     }
   });
   obj = obj.sort(sortNoteObject);
-  console.log(obj);
-  //text = text.replace(/Time=/g, "").replace(/, N/g, " => ").replace(/ote=/g, "");
+  //console.log(obj);
   return obj;
 }
 
