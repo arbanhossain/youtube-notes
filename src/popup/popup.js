@@ -26,16 +26,36 @@ const initFile = () => {
   });
 }
 
+const sortNoteObject = (a, b) => {
+  return((parseInt(a.time) > parseInt(b.time)) ? 1 : -1);
+}
+
 const formatViewText = (text) => {
-  text = text.replace(/Time=/g, "").replace(/, N/g, " => ").replace(/ote=/g, "");
-  return text;
+  let working = text.split('\n');
+  let obj = [];
+  working.forEach(item => {
+    //console.log(item)
+    if(item != '') {
+      let time = item.match(/Time=[0-9]+\.[0-9]+/)[0].replace("Time=","").split(".")[0];
+      let note = item.match(/Note=.+/)[0].replace("Note=","");
+      obj.push({ "time": time, "note": note });
+    }
+  });
+  obj = obj.sort(sortNoteObject);
+  console.log(obj);
+  //text = text.replace(/Time=/g, "").replace(/, N/g, " => ").replace(/ote=/g, "");
+  return obj;
 }
 
 /*
   Show the notes
 */
 const updateView = () => {
-  let text = formatViewText(localStorage.getItem(SRC));
+  let obj = formatViewText(localStorage.getItem(SRC));
+  text = ``
+  obj.forEach(item => {
+    text += `<span>${item.time} => ${item.note}</span><br>`;
+  });
   view.innerHTML = text;
 }
 
