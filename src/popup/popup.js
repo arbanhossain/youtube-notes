@@ -73,6 +73,11 @@ const updateHighlighter = () => {
   }, (timestamp) => {
     let elements = document.querySelectorAll(`[data-time="${Math.floor(timestamp[0])}"]`);
     elements.forEach(item => {
+      let classes = document.getElementsByClassName('highlighted');
+      console.log(classes);
+      for (let e of classes) {
+        e.classList.remove('highlighted');
+      };
       item.classList.add('highlighted');
     });
   });
