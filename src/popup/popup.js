@@ -5,7 +5,7 @@ let submitButton = document.getElementById('commit');
 let noteArea = document.getElementById('note');
 let view = document.getElementById('view');
 let SRC = '';
-
+let getTime = `x = document.getElementsByTagName('video')[0].currentTime;console.log(x);x;`;
 /*
   Initializes Local Storage for the current URL
 */
@@ -22,6 +22,7 @@ const initFile = () => {
     if (localStorage.getItem(SRC) == null) {
       localStorage.setItem(SRC, ``);
     }
+    updateView();
     //console.log(localStorage.getItem(SRC))
   });
 }
@@ -55,9 +56,20 @@ const updateView = () => {
   let obj = formatViewText(localStorage.getItem(SRC));
   text = ``
   obj.forEach(item => {
-    text += `<span>${item.time} => ${item.note}</span><br>`;
+    text += `<span data-time="${item.time}">${item.time} => ${item.note}</span><br>`;
   });
   view.innerHTML = text;
+}
+
+const updateHighlighter = () => {
+  chrome.tabs.executeScript({
+    code: getTime
+  }, (timestamp) => {
+    let elements = document.querySelectorAll(`[data-time="${Math.floor(timestamp[0])}"]`);
+    elements.forEach(item => {
+      item.classList.add('highlighted');
+    });
+  });
 }
 
 const clearNotepad = () => {
@@ -79,8 +91,7 @@ const addToNote = (time, note) => {
 
 submitButton.onclick = (e) => {
   chrome.tabs.executeScript({
-    //can use some refactor
-    code: `x = document.getElementsByTagName('video')[0].currentTime;console.log(x);x;`
+    code: getTime
   }, (timestamp) => {
     addToNote(timestamp, document.getElementById('note').value);
   });
@@ -94,3 +105,4 @@ viewButton.onclick = (e) => {
 }
 
 initFile();
+setInterval(updateHighlighter, 1000);
