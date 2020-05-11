@@ -49,16 +49,22 @@ const formatViewText = (text) => {
   return obj;
 }
 
+const makeHTML = (obj) => {
+  let text = ``;
+  obj.forEach(item => {
+    text += `<span data-time="${item.time}">${item.time} => ${item.note}</span><br>`;
+  });
+  return text;
+}
+
 /*
   Show the notes
 */
 const updateView = () => {
   let obj = formatViewText(localStorage.getItem(SRC));
-  text = ``
-  obj.forEach(item => {
-    text += `<span data-time="${item.time}">${item.time} => ${item.note}</span><br>`;
-  });
-  view.innerHTML = text;
+  let text = makeHTML(obj);
+  sessionStorage.setItem('html', text);
+  view.innerHTML = sessionStorage.getItem('html');
 }
 
 const updateHighlighter = () => {
