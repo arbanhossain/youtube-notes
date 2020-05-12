@@ -115,9 +115,6 @@ submitButton.onclick = (e) => {
   });
 };
 
-/*
-  Note Viewing is manual for now
-*/
 viewButton.onclick = (e) => {
   updateView();
 };
