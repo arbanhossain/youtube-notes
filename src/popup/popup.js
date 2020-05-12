@@ -22,7 +22,13 @@ const initFile = () => {
     if (localStorage.getItem(SRC) == null) {
       localStorage.setItem(SRC, ``);
     }
-    updateView();
+    if (sessionStorage.getItem('html') == null) {
+      updateView();
+      console.log("set");
+    } else {
+      view.innerHTML = sessionStorage.getItem('html');
+      console.log("reloaded");
+    }
     //console.log(localStorage.getItem(SRC))
   });
 };
@@ -63,8 +69,7 @@ const makeHTML = (obj) => {
 const updateView = () => {
   let obj = formatViewText(localStorage.getItem(SRC));
   let text = makeHTML(obj);
-  sessionStorage.setItem('html', text);
-  view.innerHTML = sessionStorage.getItem('html');
+  view.innerHTML = text;
 };
 
 const updateHighlighter = () => {
@@ -79,6 +84,8 @@ const updateHighlighter = () => {
         e.classList.remove('highlighted');
       }
       item.classList.add('highlighted');
+      sessionStorage.setItem('html', view.innerHTML);
+
     });
   });
 };
