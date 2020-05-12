@@ -25,11 +25,11 @@ const initFile = () => {
     updateView();
     //console.log(localStorage.getItem(SRC))
   });
-}
+};
 
 const sortNoteObject = (a, b) => {
   return ((parseInt(a.time) > parseInt(b.time)) ? 1 : -1);
-}
+};
 
 const formatViewText = (text) => {
   let working = text.split('\n');
@@ -47,7 +47,7 @@ const formatViewText = (text) => {
   obj = obj.sort(sortNoteObject);
   //console.log(obj);
   return obj;
-}
+};
 
 const makeHTML = (obj) => {
   let text = ``;
@@ -55,7 +55,7 @@ const makeHTML = (obj) => {
     text += `<span data-time="${item.time}">${item.time} => ${item.note}</span><br>`;
   });
   return text;
-}
+};
 
 /*
   Show the notes
@@ -65,7 +65,7 @@ const updateView = () => {
   let text = makeHTML(obj);
   sessionStorage.setItem('html', text);
   view.innerHTML = sessionStorage.getItem('html');
-}
+};
 
 const updateHighlighter = () => {
   chrome.tabs.executeScript({
@@ -77,28 +77,28 @@ const updateHighlighter = () => {
       console.log(classes);
       for (let e of classes) {
         e.classList.remove('highlighted');
-      };
+      }
       item.classList.add('highlighted');
     });
   });
-}
+};
 
 const clearNotepad = () => {
   noteArea.value = '';
-}
+};
 
 const saveNote = (data) => {
   console.log(data);
-  console.log('NO')
-}
+  console.log('NO');
+};
 
 const addToNote = (time, note) => {
   let text = localStorage.getItem(SRC) + `Time=${time}, Note=${note}\n`;
   console.log(text);
-  localStorage.setItem(SRC, text)
+  localStorage.setItem(SRC, text);
   clearNotepad();
   updateView();
-}
+};
 
 submitButton.onclick = (e) => {
   chrome.tabs.executeScript({
@@ -106,14 +106,14 @@ submitButton.onclick = (e) => {
   }, (timestamp) => {
     addToNote(timestamp, document.getElementById('note').value);
   });
-}
+};
 
 /*
   Note Viewing is manual for now
 */
 viewButton.onclick = (e) => {
   updateView();
-}
+};
 
 initFile();
 setInterval(updateHighlighter, 1000);
