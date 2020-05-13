@@ -5,7 +5,7 @@ let submitButton = document.getElementById('commit');
 let noteArea = document.getElementById('note');
 let view = document.getElementById('view');
 let SRC = '';
-let getTime = `x = document.getElementsByTagName('video')[0].currentTime;console.log(x);x;`;
+let getTime = `x = document.getElementsByTagName('video')[0].currentTime;x;`;
 /*
   Initializes Local Storage for the current URL
 */
@@ -22,13 +22,7 @@ const initFile = () => {
     if (localStorage.getItem(SRC) == null) {
       localStorage.setItem(SRC, ``);
     }
-    if (sessionStorage.getItem('html') == null) {
-      updateView();
-      console.log("set");
-    } else {
-      view.innerHTML = sessionStorage.getItem('html');
-      console.log("reloaded");
-    }
+    updateView();
     //console.log(localStorage.getItem(SRC))
   });
 };
@@ -76,16 +70,25 @@ const updateHighlighter = () => {
   chrome.tabs.executeScript({
     code: getTime
   }, (timestamp) => {
-    let elements = document.querySelectorAll(`[data-time="${Math.floor(timestamp[0])}"]`);
+    let obj = formatViewText(localStorage.getItem(SRC));
+    let arr = [];
+    obj.forEach(item => {
+      arr.push(parseInt(item.time));
+    });
+    //console.log(arr);
+    /*
+    Check the closest timestamp and highlight that
+    */
+    let number = [...arr].reverse().find(e => e <= timestamp);
+    //console.log(number);
+    let elements = document.querySelectorAll(`[data-time="${number}"]`);
     elements.forEach(item => {
       let classes = document.getElementsByClassName('highlighted');
-      console.log(classes);
+      //console.log(classes);
       for (let e of classes) {
         e.classList.remove('highlighted');
       }
       item.classList.add('highlighted');
-      sessionStorage.setItem('html', view.innerHTML);
-
     });
   });
 };
