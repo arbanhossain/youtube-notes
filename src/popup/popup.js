@@ -75,7 +75,6 @@ const updateHighlighter = () => {
     obj.forEach(item => {
       arr.push(parseInt(item.time));
     });
-    //console.log(arr);
     /*
     Check the closest timestamp and highlight that
     */
@@ -99,6 +98,9 @@ const clearNotepad = () => {
   noteArea.value = '';
 };
 
+/*
+Dummy function, no effect yet
+*/
 const saveNote = (data) => {
   console.log(data);
   console.log('NO');
