@@ -82,12 +82,14 @@ const updateHighlighter = () => {
     let number = [...arr].reverse().find(e => e <= timestamp);
     //console.log(number);
     let elements = document.querySelectorAll(`[data-time="${number}"]`);
+    if (elements.length == 0) return;
+    //console.log(elements);
+    let classes = document.getElementsByClassName('highlighted');
+    //console.log(classes);
+    for (let e of classes) {
+      e.classList.remove('highlighted');
+    }
     elements.forEach(item => {
-      let classes = document.getElementsByClassName('highlighted');
-      //console.log(classes);
-      for (let e of classes) {
-        e.classList.remove('highlighted');
-      }
       item.classList.add('highlighted');
     });
   });
