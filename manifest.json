@@ -3,18 +3,17 @@
     "version": "0.0.1",
     "description": "Take notes on youtube while watching",
     "background": {
-        "scripts": [
-            "src/background.js"
-        ],
-        "persistent": false
+        "service_worker": "src/background.js"
     },
     "permissions": [
+        "tabs",
+        "scripting",
         "storage",
         "activeTab",
         "declarativeContent"
     ],
-    "page_action": {
+    "action": {
         "default_popup": "src/popup/popup.html"
     },
-    "manifest_version": 2
+    "manifest_version": 3
 }

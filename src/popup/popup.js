@@ -1,20 +1,28 @@
 /*
-  Variable Initialization
+Variable Initialization
 */
 let submitButton = document.getElementById('commit');
 let noteArea = document.getElementById('note');
 let view = document.getElementById('view');
 let SRC = '';
-let getTime = `x = document.getElementsByTagName('video')[0].currentTime;x;`;
+let getTime = () => {return document.getElementsByTagName('video')[0].currentTime}
 /*
-  Initializes Local Storage for the current URL
+Initializes Local Storage for the current URL
 */
-const initFile = () => {
-  chrome.tabs.executeScript({
-    code: `x = window.location.href;x;`
+
+const getTabId = async () => {
+  let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  return tab.id;
+}
+
+const initFile = async () => {  
+  chrome.scripting.executeScript({
+    target: {tabId: await getTabId()},
+    func: () => {return window.location.href},
   }, (src) => {
-    SRC = src[0];
+    SRC = src[0].result;
     //console.log(SRC);
+    console.log(SRC)
     SRC = SRC.replace("https://www.youtube.com/watch?v=", "");
     //console.log(`id is ${SRC}`);
     SRC = SRC.replace(/&.+/, "");
@@ -58,7 +66,7 @@ const makeHTML = (obj) => {
 };
 
 /*
-  Show the notes
+Show the notes
 */
 const updateView = () => {
   let obj = formatViewText(localStorage.getItem(SRC));
@@ -66,10 +74,12 @@ const updateView = () => {
   view.innerHTML = text;
 };
 
-const updateHighlighter = () => {
-  chrome.tabs.executeScript({
-    code: getTime
+const updateHighlighter = async () => {
+  chrome.scripting.executeScript({
+    target: {tabId: await getTabId()},
+    func: getTime
   }, (timestamp) => {
+    timestamp = timestamp[0].result;
     let obj = formatViewText(localStorage.getItem(SRC));
     let arr = [];
     obj.forEach(item => {
@@ -78,15 +88,15 @@ const updateHighlighter = () => {
     /*
     Check the closest timestamp and highlight that
     */
-    let number = [...arr].reverse().find(e => e <= timestamp);
-    //console.log(number);
-    let elements = document.querySelectorAll(`[data-time="${number}"]`);
-    if (elements.length == 0) return;
-    //console.log(elements);
-    let classes = document.getElementsByClassName('highlighted');
-    //console.log(classes);
-    for (let e of classes) {
-      e.classList.remove('highlighted');
+   let number = [...arr].reverse().find(e => e <= timestamp);
+   //console.log(number);
+   let elements = document.querySelectorAll(`[data-time="${number}"]`);
+   if (elements.length == 0) return;
+   //console.log(elements);
+   let classes = document.getElementsByClassName('highlighted');
+   //console.log(classes);
+   for (let e of classes) {
+     e.classList.remove('highlighted');
     }
     elements.forEach(item => {
       item.classList.add('highlighted');
@@ -107,6 +117,7 @@ const saveNote = (data) => {
 };
 
 const addToNote = (time, note) => {
+  console.log(time);
   let text = localStorage.getItem(SRC) + `Time=${time}, Note=${note}\n`;
   console.log(text);
   localStorage.setItem(SRC, text);
@@ -114,17 +125,18 @@ const addToNote = (time, note) => {
   updateView();
 };
 
-submitButton.onclick = (e) => {
-  chrome.tabs.executeScript({
-    code: getTime
+submitButton.onclick = async (e) => {
+  chrome.scripting.executeScript({
+    target: {tabId: await getTabId()},
+    func: getTime
   }, (timestamp) => {
-    addToNote(timestamp, document.getElementById('note').value);
+    addToNote(timestamp[0].result, document.getElementById('note').value);
   });
 };
 
-viewButton.onclick = (e) => {
-  updateView();
-};
+// viewButton.onclick = (e) => {
+//   updateView();
+// };
 
 initFile();
 setInterval(updateHighlighter, 1000);
